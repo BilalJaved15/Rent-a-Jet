@@ -12,5 +12,25 @@ namespace Models
         public string destinationPlace { get; set; }
         public DateTime departureDate { get; set; }
         public int travellingAmount { get; set; }
+
+        public override void calculateCost()
+        {
+        }
+
+        public override string ToString()
+        {
+            String returnString = "";
+            returnString += "Customer Details: \n";
+            returnString += customer.ToString() + "\n\n";
+            returnString += "Trip Details: \n";
+            returnString += "Departure Place: " + departurePlace + "\n";
+            returnString += "Destination Date: " + destinationPlace + "\n";
+            returnString += "Departure Date: " + departureDate + "\n";
+            returnString += "No. of People: " + travellingAmount + "\n\n";
+            returnString += base.ToString();
+            returnString += "\n\nAircraft Details: \n";
+            returnString += aircraft.ToString() + "";
+            return returnString;
+        }
     }
 }

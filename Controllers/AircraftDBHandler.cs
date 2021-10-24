@@ -17,7 +17,7 @@ namespace Controllers
             using (SqlConnection con = new SqlConnection(constr))
             {
                 con.Open();
-                string query = "select * from AIRCRAFTS id = " + id;
+                string query = "select * from AIRCRAFTS where id = " + id;
                 SqlCommand cmd = new SqlCommand(query, con);
                 SqlDataReader reader = cmd.ExecuteReader();
                 if (reader.Read())
@@ -110,6 +110,19 @@ namespace Controllers
                 }
             }
             return aircrafts;
+        }
+
+        public static void decQuantity(int id)
+        {
+            string constr = "Data Source=DESKTOP-LPV1QVS;Initial Catalog=EAD_JET;Integrated Security=True";
+            int newQty = GetAircraftById(id).quantity - 1;
+            using (SqlConnection con = new SqlConnection(constr))
+            {
+                con.Open();
+                string query = "Update AIRCRAFTS set QUANTITY = " + newQty + "where id = " + "id";
+                SqlCommand cmd = new SqlCommand(query, con);
+                cmd.ExecuteNonQuery();
+            }
         }
     }
 }

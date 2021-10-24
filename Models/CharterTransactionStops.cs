@@ -14,5 +14,28 @@ namespace Models
         public int stopovers { get; set; }
         public int lengthOfStay { get; set; }
         public int travellingAmount { get; set; }
+
+        public override void calculateCost()
+        {
+        }
+
+        public override string ToString()
+        {
+            String returnString = "";
+            returnString += "Customer Details: \n";
+            returnString += customer.ToString() + "\n\n";
+            returnString += "Trip Details: \n";
+            returnString += "Departure Place: " + departurePlace + "\n";
+            returnString += "Destination Date: " + destinationPlace + "\n";
+            returnString += "Departure Date: " + departureDate + "\n";
+            returnString += "No. of Stops: " + stopovers+ "\n";
+            returnString += "Length of Stay: " + lengthOfStay+ "\n";
+            returnString += "No. of People: " + travellingAmount + "\n";
+            returnString += base.ToString();
+            returnString += "\n\nAircraft Details: \n";
+            returnString += aircraft.ToString() + "";
+            return returnString;
+        }
+
     }
 }

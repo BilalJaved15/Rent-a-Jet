@@ -13,6 +13,8 @@ namespace Rent_a_Jet
         static void Main(string[] args)
         {
             RentAJet.startApp();
+            //PDF.generatePDF(new CharterTransactionDuration());
+            //SMTP.mailTo("bilaljavedblackops15@gmail.com", "NEW MAIL", "HAHA");
         }
     }
 }

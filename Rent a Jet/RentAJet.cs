@@ -79,26 +79,236 @@ namespace Rent_a_Jet
                 }
                 Console.WriteLine("Please select an aircraft you want to book(1^" + aircrafts.Count() + "): ");
                 int selectedIndex = Convert.ToInt32(Console.ReadLine());
-                if (aircrafts[selectedIndex].cabin > 0)
+                while (!(selectedIndex >= 1 && selectedIndex <= aircrafts.Count()))
+                {
+                    Console.WriteLine("Invalid Input! ");
+                    Console.WriteLine("Enter again: ");
+                    selectedIndex = Convert.ToInt32(Console.ReadLine());
+                }
+                transaction.aircraft = aircrafts[selectedIndex - 1];
+                if (aircrafts[selectedIndex - 1].crewFlight > 1)
                 {
                     Console.WriteLine("Do you want to book addition flight crew? Following are the costs\n" +
-                        "of booking additional flight crew: ");
+                        "of booking additional flight crew: \n\n");
 
+                    Console.WriteLine(PersonnelCostDBHandler.GetPersonnelByRole("Captain"));
+                    Console.WriteLine(PersonnelCostDBHandler.GetPersonnelByRole("First Officer"));
+                    Console.WriteLine("Enter index of Flight Crew(1^2) (0 for no): ");
+                    int crewIndex = Convert.ToInt32(Console.ReadLine());
+                    while (!(crewIndex >= 0 && crewIndex <= 2))
+                    {
+                        Console.WriteLine("Invalid Input! ");
+                        Console.WriteLine("Enter again: ");
+                        crewIndex = Convert.ToInt32(Console.ReadLine());
+                    }
+                    if (crewIndex == 1)
+                    {
+                        transaction.extraCaptain = true;
+                    }
+                    else
+                    {
+                        transaction.extraOfficer = true;
+                    }
+                    if (aircrafts[selectedIndex - 1].cabin > 1)
+                    {
+                        Console.WriteLine("Do you want to book addition flight attendant? Following is the cost\n" +
+                        "of booking additional flight attendant: \n\n");
+
+                        Console.WriteLine(PersonnelCostDBHandler.GetPersonnelByRole("Flight Attendant (Cabin)"));
+                        Console.WriteLine("Enter y for yes else for no: ");
+                        if (Console.ReadLine() == "y")
+                        {
+                            transaction.extraCabin = true;
+                        }
+                    }
                 }
             }
             bottomBar();
+            sendContract(transaction);
         }
 
         public static void charterOp2()
         {
+            CharterTransactionStops transaction = new CharterTransactionStops();
             Customer customer = enquireDetails();
             customer.transactionType = 2;
+            Console.Clear();
+            transaction.customer = customer;
+            topBar();
+            Console.Write("            Please Enter Departure Place: ");
+            transaction.departurePlace = Console.ReadLine();
+            Console.Write("\n         Please Enter Destionation Place: ");
+            transaction.destinationPlace = Console.ReadLine();
+            Console.Write("\n            Please Enter Number of Stops: ");
+            transaction.stopovers = Convert.ToInt32(Console.ReadLine());
+            Console.Write("\n      Please Enter Length of Stay (DAYS): ");
+            transaction.lengthOfStay = Convert.ToInt32(Console.ReadLine());
+            Console.Write("\nPlease Enter Departure Date (YYYY-MM-DD): ");
+            transaction.departureDate = Convert.ToDateTime(Console.ReadLine());
+            Console.Write("\nPlease Enter Number of People Travelling: ");
+            transaction.travellingAmount = Convert.ToInt32(Console.ReadLine());
+            List<Aircraft> aircrafts = AircraftDBHandler.getAircraftsByCapacity(transaction.travellingAmount);
+            if (aircrafts.Count() == 0)
+            {
+                Console.WriteLine("\nSorry, we currently do not have an aircraft that can cater the number of\n " +
+                    "people you want to travel with. Press any key to return to main menu");
+                Console.ReadLine();
+            }
+            else
+            {
+                int index = 0;
+                foreach (var aircraft in aircrafts)
+                {
+                    Console.WriteLine((index + 1) + ": ");
+                    Console.WriteLine(aircraft.ToString());
+                    index++;
+                }
+                Console.WriteLine("Please select an aircraft you want to book(1^" + aircrafts.Count() + "): ");
+                int selectedIndex = Convert.ToInt32(Console.ReadLine());
+                while (!(selectedIndex >= 1 && selectedIndex <= aircrafts.Count()))
+                {
+                    Console.WriteLine("Invalid Input! ");
+                    Console.WriteLine("Enter again: ");
+                    selectedIndex = Convert.ToInt32(Console.ReadLine());
+                }
+                transaction.aircraft = aircrafts[selectedIndex - 1];
+                if (aircrafts[selectedIndex - 1].crewFlight > 1)
+                {
+                    Console.WriteLine("Do you want to book addition flight crew? Following are the costs\n" +
+                        "of booking additional flight crew: \n\n");
+
+                    Console.WriteLine(PersonnelCostDBHandler.GetPersonnelByRole("Captain"));
+                    Console.WriteLine(PersonnelCostDBHandler.GetPersonnelByRole("First Officer"));
+                    Console.WriteLine("Enter index of Flight Crew(1^2) (0 for no): ");
+                    int crewIndex = Convert.ToInt32(Console.ReadLine());
+                    while (!(crewIndex >= 0 && crewIndex <= 2))
+                    {
+                        Console.WriteLine("Invalid Input! ");
+                        Console.WriteLine("Enter again: ");
+                        crewIndex = Convert.ToInt32(Console.ReadLine());
+                    }
+                    if (crewIndex == 1)
+                    {
+                        transaction.extraCaptain = true;
+                    }
+                    else
+                    {
+                        transaction.extraOfficer = true;
+                    }
+                    if (aircrafts[selectedIndex - 1].cabin > 1)
+                    {
+                        Console.WriteLine("Do you want to book addition flight attendant? Following is the cost\n" +
+                        "of booking additional flight attendant: \n\n");
+
+                        Console.WriteLine(PersonnelCostDBHandler.GetPersonnelByRole("Flight Attendant (Cabin)"));
+                        Console.WriteLine("Enter y for yes else for no: ");
+                        if (Console.ReadLine() == "y")
+                        {
+                            transaction.extraCabin = true;
+                        }
+                    }
+                }
+            }
+            bottomBar();
+            sendContract(transaction);
         }
 
         public static void charterOp3()
         {
+            CharterTransactionDuration transaction = new CharterTransactionDuration();
             Customer customer = enquireDetails();
             customer.transactionType = 3;
+            Console.Clear();
+            transaction.customer = customer;
+            topBar();
+            Console.Write("Please Enter Duration of Booking (DAYS): ");
+            transaction.charterDuration = Convert.ToInt32(Console.ReadLine());
+            List<Aircraft> aircrafts = AircraftDBHandler.getAllAircrafts();
+            int index = 0;
+            foreach (var aircraft in aircrafts)
+            {
+                Console.WriteLine((index + 1) + ": ");
+                Console.WriteLine(aircraft.ToString());
+                index++;
+            }
+            Console.WriteLine("Please select an aircraft you want to book(1^" + aircrafts.Count() + "): ");
+            int selectedIndex = Convert.ToInt32(Console.ReadLine());
+            while (!(selectedIndex >= 1 && selectedIndex <= aircrafts.Count()))
+            {
+                Console.WriteLine("Invalid Input! ");
+                Console.WriteLine("Enter again: ");
+                selectedIndex = Convert.ToInt32(Console.ReadLine());
+            }
+            transaction.aircraft = aircrafts[selectedIndex - 1];
+            if (aircrafts[selectedIndex - 1].crewFlight > 1)
+            {
+                Console.WriteLine("Do you want to book addition flight crew? Following are the costs\n" +
+                    "of booking additional flight crew: \n\n");
+
+                Console.WriteLine(PersonnelCostDBHandler.GetPersonnelByRole("Captain"));
+                Console.WriteLine(PersonnelCostDBHandler.GetPersonnelByRole("First Officer"));
+                Console.WriteLine("Enter index of Flight Crew(1^2) (0 for no): ");
+                int crewIndex = Convert.ToInt32(Console.ReadLine());
+                while (!(crewIndex >= 0 && crewIndex <= 2))
+                {
+                    Console.WriteLine("Invalid Input! ");
+                    Console.WriteLine("Enter again: ");
+                    crewIndex = Convert.ToInt32(Console.ReadLine());
+                }
+                if (crewIndex == 1)
+                {
+                    transaction.extraCaptain = true;
+                }
+                else
+                {
+                    transaction.extraOfficer = true;
+                }
+                if (aircrafts[selectedIndex - 1].cabin > 1)
+                {
+                    Console.WriteLine("Do you want to book addition flight attendant? Following is the cost\n" +
+                    "of booking additional flight attendant: \n\n");
+
+                    Console.WriteLine(PersonnelCostDBHandler.GetPersonnelByRole("Flight Attendant (Cabin)"));
+                    Console.WriteLine("Enter y for yes else for no: ");
+                    if (Console.ReadLine() == "y")
+                    {
+                        transaction.extraCabin = true;
+                    }
+                }
+            }
+            bottomBar();
+            sendContract(transaction);
+        }
+
+
+        public static void sendContract(CharterTransaction transaction) {
+            Console.Clear();
+            topBar();
+            Console.WriteLine("Your Receipt: \n\n");
+            Console.WriteLine(transaction.ToString());
+            bottomBar();
+            Console.WriteLine("Enter Y to accept, N to reject");
+            String choice = Console.ReadLine();
+            while (choice != "Y" && choice != "N") {
+                Console.WriteLine("Invalid Input! ");
+                Console.WriteLine("Enter again: ");
+                choice = Console.ReadLine();
+            }
+            if (choice == "Y")
+            {
+                Console.WriteLine("Generating PDF...");
+                PDF.generatePDF(transaction);
+                Console.WriteLine("Sending Email...");
+                SMTP.mailTo(transaction.customer.email, "JET RENTAL CONTRACT", "PFA");
+                AircraftDBHandler.decQuantity(transaction.aircraft.id);
+                Console.WriteLine("Your contract has been emailed to specified email.");
+            }
+            else {
+                Console.WriteLine("Please give a reason for rejecting: ");
+                Console.ReadLine();
+                Console.WriteLine("Thanks for sharing your opinion.");
+            }
+            Console.WriteLine("Press Enter to return to main menu");
         }
 
         public static void startApp()

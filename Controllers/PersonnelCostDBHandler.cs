@@ -59,7 +59,7 @@ namespace Controllers
             using (SqlConnection con = new SqlConnection(constr))
             {
                 con.Open();
-                string query = "select * from [PERSONNEL-COST] where role = " + role;
+                string query = "select * from [PERSONNEL-COST] where role = '" + role + "'";
                 SqlCommand cmd = new SqlCommand(query, con);
                 SqlDataReader reader = cmd.ExecuteReader();
                 if (reader.Read())
