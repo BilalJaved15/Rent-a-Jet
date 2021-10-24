@@ -10,13 +10,14 @@ namespace Controllers
 {
     public static class AircraftDBHandler
     {
-        public static Aircraft GetAircraftById(int id) {
+        public static Aircraft GetAircraftById(int id)
+        {
             Aircraft aircraft = new Aircraft();
             string constr = "Data Source=DESKTOP-LPV1QVS;Initial Catalog=EAD_JET;Integrated Security=True";
             using (SqlConnection con = new SqlConnection(constr))
             {
                 con.Open();
-                string query = "select * from AIRCRAFTS where id = " + id;
+                string query = "select * from AIRCRAFTS id = " + id;
                 SqlCommand cmd = new SqlCommand(query, con);
                 SqlDataReader reader = cmd.ExecuteReader();
                 if (reader.Read())
@@ -39,14 +40,51 @@ namespace Controllers
             return aircraft;
         }
 
-        public static List<Aircraft> getAllAircrafts() {
+        public static List<Aircraft> getAllAircrafts()
+        {
             List<Aircraft> aircrafts = new List<Aircraft>();
             string constr = "Data Source=DESKTOP-LPV1QVS;Initial Catalog=EAD_JET;Integrated Security=True";
             int index = 0;
             using (SqlConnection con = new SqlConnection(constr))
             {
                 con.Open();
-                string query = "select * from AIRCRAFTS";
+                string query = "select * from AIRCRAFTS where quantity > 0";
+                SqlCommand cmd = new SqlCommand(query, con);
+                SqlDataReader reader = cmd.ExecuteReader();
+                while (reader.Read())
+                {
+                    aircrafts.Add(new Aircraft());
+                    aircrafts[index].id = Convert.ToInt32(reader[0]);
+                    aircrafts[index].quantity = Convert.ToInt32(reader[1]);
+                    aircrafts[index].manufacturer = aircrafts[index].manufacturer = Convert.ToString(reader[2]).Trim();
+                    aircrafts[index].type = aircrafts[index].type = Convert.ToString(reader[3]).Trim();
+                    aircrafts[index].crewFlight = Convert.ToInt32(reader[4]);
+                    aircrafts[index].cabin = Convert.ToInt32(reader[5]);
+                    aircrafts[index].range = Convert.ToInt32(reader[6]);
+                    aircrafts[index].capacity = Convert.ToInt32(reader[7]);
+                    aircrafts[index].cruisingSpeed = Convert.ToString(reader[8]);
+                    aircrafts[index].engines = Convert.ToInt32(reader[9]);
+                    aircrafts[index].engineType = Convert.ToString(reader[10]);
+                    aircrafts[index].annualCost = Convert.ToDouble(reader[11]);
+                    aircrafts[index].hourlyCost = Convert.ToDouble(reader[12]);
+                    aircrafts[index].type = aircrafts[index].type.Replace('\n', ' ');
+                    aircrafts[index].type = aircrafts[index].type.Replace('\r', ' ');
+                    aircrafts[index].type = aircrafts[index].type.Replace("  ", "");
+                    index++;
+                }
+            }
+            return aircrafts;
+        }
+
+        public static List<Aircraft> getAircraftsByCapacity(int lowerBound)
+        {
+            List<Aircraft> aircrafts = new List<Aircraft>();
+            string constr = "Data Source=DESKTOP-LPV1QVS;Initial Catalog=EAD_JET;Integrated Security=True";
+            int index = 0;
+            using (SqlConnection con = new SqlConnection(constr))
+            {
+                con.Open();
+                string query = "select * from AIRCRAFTS where quantity > 0 and CAPACITY >= " + lowerBound;
                 SqlCommand cmd = new SqlCommand(query, con);
                 SqlDataReader reader = cmd.ExecuteReader();
                 while (reader.Read())

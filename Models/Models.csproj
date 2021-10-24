@@ -42,6 +42,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Aircraft.cs" />
+    <Compile Include="CharterTransaction.cs" />
+    <Compile Include="CharterTransactionDuration.cs" />
+    <Compile Include="CharterTransactionSingle.cs" />
+    <Compile Include="CharterTransactionStops.cs" />
+    <Compile Include="Customer.cs" />
     <Compile Include="PersonnelCost.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
