@@ -119,7 +119,7 @@ namespace Controllers
             using (SqlConnection con = new SqlConnection(constr))
             {
                 con.Open();
-                string query = "Update AIRCRAFTS set QUANTITY = " + newQty + "where id = " + "id";
+                string query = "Update AIRCRAFTS set QUANTITY = " + newQty + " where id = " + id;
                 SqlCommand cmd = new SqlCommand(query, con);
                 cmd.ExecuteNonQuery();
             }

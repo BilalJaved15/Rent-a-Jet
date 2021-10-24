@@ -55,11 +55,11 @@ namespace Rent_a_Jet
             topBar();
             Console.Write("            Please Enter Departure Place: ");
             transaction.departurePlace = Console.ReadLine();
-            Console.Write("\n         Please Enter Destionation Place: ");
+            Console.Write("         Please Enter Destionation Place: ");
             transaction.destinationPlace = Console.ReadLine();
-            Console.Write("\nPlease Enter Departure Date (YYYY-MM-DD): ");
+            Console.Write("Please Enter Departure Date (YYYY-MM-DD): ");
             transaction.departureDate = Convert.ToDateTime(Console.ReadLine());
-            Console.Write("\nPlease Enter Number of People Travelling: ");
+            Console.Write("Please Enter Number of People Travelling: ");
             transaction.travellingAmount = Convert.ToInt32(Console.ReadLine());
             List<Aircraft> aircrafts = AircraftDBHandler.getAircraftsByCapacity(transaction.travellingAmount);
             if (aircrafts.Count() == 0)
@@ -124,7 +124,7 @@ namespace Rent_a_Jet
                 }
             }
             bottomBar();
-            sendContract(transaction);
+            sendContract(transaction, 1);
         }
 
         public static void charterOp2()
@@ -137,15 +137,22 @@ namespace Rent_a_Jet
             topBar();
             Console.Write("            Please Enter Departure Place: ");
             transaction.departurePlace = Console.ReadLine();
-            Console.Write("\n         Please Enter Destionation Place: ");
+            Console.Write("         Please Enter Destionation Place: ");
             transaction.destinationPlace = Console.ReadLine();
-            Console.Write("\n            Please Enter Number of Stops: ");
-            transaction.stopovers = Convert.ToInt32(Console.ReadLine());
-            Console.Write("\n      Please Enter Length of Stay (DAYS): ");
+            Console.Write("            Please Enter Number of Stops: ");
+            int stops = Convert.ToInt32(Console.ReadLine());
+            transaction.stopovers = new List<string>();
+            for (int i = 0; i < stops; i++)
+            {
+                Console.WriteLine("Enter stop " + (i + 1) + " name: ");
+                String stopover = Console.ReadLine();
+                transaction.stopovers.Add(stopover);
+            }
+            Console.Write("      Please Enter Length of Stay (DAYS): ");
             transaction.lengthOfStay = Convert.ToInt32(Console.ReadLine());
-            Console.Write("\nPlease Enter Departure Date (YYYY-MM-DD): ");
+            Console.Write("Please Enter Departure Date (YYYY-MM-DD): ");
             transaction.departureDate = Convert.ToDateTime(Console.ReadLine());
-            Console.Write("\nPlease Enter Number of People Travelling: ");
+            Console.Write("Please Enter Number of People Travelling: ");
             transaction.travellingAmount = Convert.ToInt32(Console.ReadLine());
             List<Aircraft> aircrafts = AircraftDBHandler.getAircraftsByCapacity(transaction.travellingAmount);
             if (aircrafts.Count() == 0)
@@ -210,7 +217,7 @@ namespace Rent_a_Jet
                 }
             }
             bottomBar();
-            sendContract(transaction);
+            sendContract(transaction, 2);
         }
 
         public static void charterOp3()
@@ -221,7 +228,9 @@ namespace Rent_a_Jet
             Console.Clear();
             transaction.customer = customer;
             topBar();
-            Console.Write("Please Enter Duration of Booking (DAYS): ");
+            Console.Write("Please Enter Departure Date (YYYY-MM-DD): ");
+            transaction.departureDate = Convert.ToDateTime(Console.ReadLine());
+            Console.Write(" Please Enter Duration of Booking (DAYS): ");
             transaction.charterDuration = Convert.ToInt32(Console.ReadLine());
             List<Aircraft> aircrafts = AircraftDBHandler.getAllAircrafts();
             int index = 0;
@@ -277,19 +286,22 @@ namespace Rent_a_Jet
                 }
             }
             bottomBar();
-            sendContract(transaction);
+            sendContract(transaction, 3);
         }
 
 
-        public static void sendContract(CharterTransaction transaction) {
+        public static void sendContract(CharterTransaction transaction, int mode)
+        {
             Console.Clear();
+            transaction.calculateCost();
             topBar();
             Console.WriteLine("Your Receipt: \n\n");
             Console.WriteLine(transaction.ToString());
             bottomBar();
             Console.WriteLine("Enter Y to accept, N to reject");
             String choice = Console.ReadLine();
-            while (choice != "Y" && choice != "N") {
+            while (choice != "Y" && choice != "N")
+            {
                 Console.WriteLine("Invalid Input! ");
                 Console.WriteLine("Enter again: ");
                 choice = Console.ReadLine();
@@ -297,18 +309,32 @@ namespace Rent_a_Jet
             if (choice == "Y")
             {
                 Console.WriteLine("Generating PDF...");
-                PDF.generatePDF(transaction);
+                if (mode == 1)
+                {
+                    PDF.generatePDF((CharterTransactionSingle)(transaction));
+                }
+                else if (mode == 2)
+                {
+                    PDF.generatePDF((CharterTransactionStops)(transaction));
+                }
+                else
+                {
+                    PDF.generatePDF((CharterTransactionDuration)(transaction));
+                }
+                Console.WriteLine("PDF Generated Successfully.");
                 Console.WriteLine("Sending Email...");
                 SMTP.mailTo(transaction.customer.email, "JET RENTAL CONTRACT", "PFA");
                 AircraftDBHandler.decQuantity(transaction.aircraft.id);
                 Console.WriteLine("Your contract has been emailed to specified email.");
             }
-            else {
+            else
+            {
                 Console.WriteLine("Please give a reason for rejecting: ");
                 Console.ReadLine();
                 Console.WriteLine("Thanks for sharing your opinion.");
             }
             Console.WriteLine("Press Enter to return to main menu");
+            Console.ReadLine();
         }
 
         public static void startApp()

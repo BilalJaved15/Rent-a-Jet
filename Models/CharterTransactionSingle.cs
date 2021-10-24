@@ -15,6 +15,20 @@ namespace Models
 
         public override void calculateCost()
         {
+            totalCost += aircraft.annualCost / 365 * 1;
+            if (extraCabin)
+            {
+                totalCost += cabinCostPerYear / 365 * 1;
+            }
+            if (extraCaptain)
+            {
+                totalCost += captainCostPerYear / 365 * 1;
+            }
+            if (extraOfficer)
+            {
+                totalCost += officerCostPerYear / 365 * 1;
+            }
+            totalCost += (2000 / 365 * 1) * aircraft.hourlyCost;
         }
 
         public override string ToString()
